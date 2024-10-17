@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { 
     TextInput, View, Text, Button,
     TouchableOpacity, Vibration,
-    Pressable, Keyboard, FlatList
+    Pressable, Keyboard, FlatList, 
 } from "react-native";
 
 import ResultImc from "../ResultImc";
@@ -21,9 +21,11 @@ export default function Form(){
 
     function imcCalculator(){
         let heightFormated = height.replace(',','.'); // se for colocado vírgula gera erro, ent formatos o hight que est sendo enviado
-        return setImc(
-            ((weight/(heightFormated*heightFormated)).toFixed(2)) // formula pra calc imc  exibe apenas duas casas decimais
+        let totalImc = /* return setImc */(
+            (weight/(heightFormated*heightFormated)).toFixed(2) // formula pra calc imc  exibe apenas duas casas decimais
         );
+        setImcList((arr) => [...arr, {id: new Date().getTime(), imc:totalImc}])
+        setImc(totalImc)
     }
 
     function validationImc(){
@@ -93,6 +95,20 @@ export default function Form(){
                     </TouchableOpacity>
                 </View>
             }
+            <FlatList
+                showsVerticalScrollIndicator={false}
+                style={styles.listImcs}
+                data={imcList.reverse()}
+                renderItem = {
+                    ({item}) => (
+                        <Text style={styles.resultImcItem}>
+                            <Text style={styles.textResultItemList}>Resultado IMC = </Text>
+                            {item.imc}
+                        </Text>
+                    )
+                }
+                keyExtractor={(item) => item.id}
+            />
         </View>
     );
 }
